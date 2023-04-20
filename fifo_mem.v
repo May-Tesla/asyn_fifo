@@ -21,20 +21,20 @@
 
 `timescale 1ns / 10ps
 
-module asyn_fifo #(
+module fifo_mem #(
     ADDR_WIDTH = 4, // 16 depth
     DATA_WIDTH = 32
 )(
     input  wire wclk,
     input  wire wrst_n,
-    input  wire winc,
-    output wire full,
+    input  wire wclken,
+    input  wire [ADDR_WIDTH-1:0] waddr,
     input  wire [DATA_WIDTH-1:0] wdata,
 
     input  wire rclk,
     input  wire rrst_n,
-    output wire empty,
+    input  wire [ADDR_WIDTH-1:0] raddr,
     output wire [DATA_WIDTH-1:0] rdata
 );
 
-endmodule //asyn_fifo
+endmodule //fifo_mem

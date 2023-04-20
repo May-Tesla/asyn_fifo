@@ -21,7 +21,7 @@
 
 `timescale 1ns / 10ps
 
-module asyn_fifo #(
+module wr_ctrl #(
     ADDR_WIDTH = 4, // 16 depth
     DATA_WIDTH = 32
 )(
@@ -37,4 +37,4 @@ module asyn_fifo #(
     output wire [DATA_WIDTH-1:0] rdata
 );
 
-endmodule //asyn_fifo
+endmodule //wr_ctrl
