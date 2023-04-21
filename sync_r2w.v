@@ -21,20 +21,14 @@
 
 `timescale 1ns / 10ps
 
-module asyn_fifo #(
+module sync_r2w #(
     ADDR_WIDTH = 4, // 16 depth
     DATA_WIDTH = 32
 )(
     input  wire wclk,
     input  wire wrst_n,
-    input  wire winc,
-    output wire full,
-    input  wire [DATA_WIDTH-1:0] wdata,
-
-    input  wire rclk,
-    input  wire rrst_n,
-    output wire empty,
-    output wire [DATA_WIDTH-1:0] rdata
+    input  wire [ADDR_WIDTH:0] rptr,
+    output wire [ADDR_WIDTH:0] wq2_rptr
 );
 
-endmodule //asyn_fifo
+endmodule //sync_r2w

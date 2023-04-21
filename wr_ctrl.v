@@ -29,12 +29,10 @@ module wr_ctrl #(
     input  wire wrst_n,
     input  wire winc,
     output wire full,
-    input  wire [DATA_WIDTH-1:0] wdata,
 
-    input  wire rclk,
-    input  wire rrst_n,
-    output wire empty,
-    output wire [DATA_WIDTH-1:0] rdata
+    input  wire [ADDR_WIDTH:0] wq2_rptr, // 1 bit more than addr
+    output wire [ADDR_WIDTH:0] wptr,
+    output wire [ADDR_WIDTH-1:0] waddr
 );
 
 endmodule //wr_ctrl

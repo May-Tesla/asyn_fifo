@@ -21,20 +21,18 @@
 
 `timescale 1ns / 10ps
 
-module asyn_fifo #(
+module rd_ctrl #(
     ADDR_WIDTH = 4, // 16 depth
     DATA_WIDTH = 32
 )(
-    input  wire wclk,
-    input  wire wrst_n,
-    input  wire winc,
-    output wire full,
-    input  wire [DATA_WIDTH-1:0] wdata,
-
     input  wire rclk,
     input  wire rrst_n,
+    input  wire rinc,
     output wire empty,
-    output wire [DATA_WIDTH-1:0] rdata
+
+    input  wire [ADDR_WIDTH:0] rq2_wptr, // 1 bit more than addr
+    output wire [ADDR_WIDTH:0] rptr,
+    output wire [ADDR_WIDTH-1:0] raddr
 );
 
-endmodule //asyn_fifo
+endmodule //rd_ctrl

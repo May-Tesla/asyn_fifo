@@ -37,4 +37,66 @@ module asyn_fifo #(
     output wire [DATA_WIDTH-1:0] rdata
 );
 
+    wr_ctrl#(
+        .ADDR_WIDTH( ADDR_WIDTH ),
+        .DATA_WIDTH( DATA_WIDTH )
+    )u_wr_ctrl(
+        .wclk           ( wclk           ),
+        .wrst_n         ( wrst_n         ),
+        .winc           ( winc           ),
+        .full           ( full           ),
+        .wq2_rptr       ( wq2_rptr       ),
+        .wptr           ( wptr           ),
+        .waddr          ( waddr          )
+    );
+
+    sync_r2w#(
+        .ADDR_WIDTH( ADDR_WIDTH ),
+        .DATA_WIDTH( DATA_WIDTH )
+    )u_sync_r2w(
+        .wclk           ( wclk           ),
+        .wrst_n         ( wrst_n         ),
+        .rptr           ( rptr           ),
+        .wq2_rptr       ( wq2_rptr       )
+    );
+
+    rd_ctrl#(
+        .ADDR_WIDTH( ADDR_WIDTH ),
+        .DATA_WIDTH( DATA_WIDTH )
+    )u_rd_ctrl(
+        .rclk           ( rclk           ),
+        .rrst_n         ( rrst_n         ),
+        .rinc           ( rinc           ),
+        .empty          ( empty          ),
+        .rq2_wptr       ( rq2_wptr       ),
+        .rptr           ( rptr           ),
+        .raddr          ( raddr          )
+    );
+
+    sync_w2r#(
+        .ADDR_WIDTH( ADDR_WIDTH ),
+        .DATA_WIDTH( DATA_WIDTH )
+    )u_sync_w2r(
+        .rclk           ( rclk           ),
+        .rrst_n         ( rrst_n         ),
+        .wptr           ( wptr           ),
+        .rq2_wptr       ( rq2_wptr       )
+    );
+
+    fifo_mem#(
+        .ADDR_WIDTH( ADDR_WIDTH ),
+        .DATA_WIDTH( DATA_WIDTH )
+    )u_fifo_mem(
+        .wclk           ( wclk           ),
+        .wrst_n         ( wrst_n         ),
+        .wclken         ( wclken         ),
+        .waddr          ( waddr          ),
+        .wdata          ( wdata          ),
+        .rclk           ( rclk           ),
+        .rrst_n         ( rrst_n         ),
+        .raddr          ( raddr          ),
+        .rdata          ( rdata          )
+    );
+
+
 endmodule //asyn_fifo
