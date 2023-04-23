@@ -26,6 +26,7 @@
 *_funcsim.v
 *_funcsim.vhdl
 .project
+.gitignore
 
 # [dir]
 *.cache
@@ -36,6 +37,8 @@
 *.sdk
 *.hw
 *.ip_user_files
+*.srcs
+*.sim
 
 ### IP synth
 *_synth_*
