@@ -20,9 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 10ps
-`ifdef XILINX
-    `undef XILINX
-`endif
+
 
 module fifo_mem #(
     ADDR_WIDTH = 4, // 16 depth
@@ -55,6 +53,12 @@ module fifo_mem #(
         );
     `else
         reg  [DATA_WIDTH-1:0] fifo_mem [2**ADDR_WIDTH-1:0];
+        
+        integer i;
+        initial begin
+            for(i=0; i<2**ADDR_WIDTH; i=i+1)
+                fifo_mem[i] <= {DATA_WIDTH{1'b0}};
+        end
 
         always @(posedge wclk ) begin
             if(wclken) fifo_mem[waddr] <= wdata;

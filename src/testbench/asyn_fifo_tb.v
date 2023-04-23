@@ -50,7 +50,7 @@ module asyn_fifo_tb ();
     );
 
     always @(posedge wclk or negedge wrst_n) begin
-        if(wrst_n) wdata <= 0;
+        if(!wrst_n) wdata <= 0;
         else wdata <= wdata + (winc && ~full);
     end
 

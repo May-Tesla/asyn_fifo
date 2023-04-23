@@ -159,8 +159,5 @@ module asyn_fifo #(
             .probe2 ( raddr  ), // input wire [ 3:0]  probe2
             .probe3 ( rdata  )  // input wire [31:0]  probe3
         );
-    `else
-        assign wclk = clk_in1_p;
-        assign rclk = clk_in2_p;
     `endif
 endmodule //asyn_fifo
