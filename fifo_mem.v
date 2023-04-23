@@ -26,15 +26,38 @@ module fifo_mem #(
     DATA_WIDTH = 32
 )(
     input  wire wclk,
-    input  wire wrst_n,
-    input  wire wclken,
+    // input  wire wrst_n,
+    input  wire winc,
+    input  wire wfull,
     input  wire [ADDR_WIDTH-1:0] waddr,
     input  wire [DATA_WIDTH-1:0] wdata,
 
-    input  wire rclk,
-    input  wire rrst_n,
+    // input  wire rclk,
+    // input  wire rrst_n,
     input  wire [ADDR_WIDTH-1:0] raddr,
     output wire [DATA_WIDTH-1:0] rdata
 );
+
+    assign wclken = winc && ~wfull;
+
+    `ifdef XILINX
+        blk_mem_gen_0 fifo_mem (
+            .clka  ( wclk   ),    // input wire clka
+            .wea   ( wclken ),    // input wire [ 0 : 0] wea
+            .addra ( waddr  ),    // input wire [ 3 : 0] addra
+            .dina  ( wdata  ),    // input wire [32 : 0] dina
+            .clkb  ( rclk   ),    // input wire clkb
+            .addrb ( raddr  ),    // input wire [ 3 : 0] addrb
+            .doutb ( rdata  )     // output wire [32 : 0] doutb
+        );
+    `else
+        reg  [ADDR_WIDTH-1:0] fifo_mem [DATA_WIDTH-1:0];
+
+        always @(posedge wclk ) begin
+            if(wclken) fifo_mem[waddr] <= wdata;
+        end
+
+        assign rdata = fifo_mem[raddr];
+    `endif
 
 endmodule //fifo_mem

@@ -28,12 +28,13 @@ module asyn_fifo #(
     input  wire wclk,
     input  wire wrst_n,
     input  wire winc,
-    output wire full,
+    output wire wfull,
     input  wire [DATA_WIDTH-1:0] wdata,
 
     input  wire rclk,
     input  wire rrst_n,
-    output wire empty,
+    input  wire rinc,
+    output wire rempty,
     output wire [DATA_WIDTH-1:0] rdata
 );
 
@@ -44,7 +45,7 @@ module asyn_fifo #(
         .wclk           ( wclk           ),
         .wrst_n         ( wrst_n         ),
         .winc           ( winc           ),
-        .full           ( full           ),
+        .wfull          ( wfull          ),
         .wq2_rptr       ( wq2_rptr       ),
         .wptr           ( wptr           ),
         .waddr          ( waddr          )
@@ -67,7 +68,7 @@ module asyn_fifo #(
         .rclk           ( rclk           ),
         .rrst_n         ( rrst_n         ),
         .rinc           ( rinc           ),
-        .empty          ( empty          ),
+        .rempty         ( rempty         ),
         .rq2_wptr       ( rq2_wptr       ),
         .rptr           ( rptr           ),
         .raddr          ( raddr          )
@@ -88,15 +89,15 @@ module asyn_fifo #(
         .DATA_WIDTH( DATA_WIDTH )
     )u_fifo_mem(
         .wclk           ( wclk           ),
-        .wrst_n         ( wrst_n         ),
-        .wclken         ( wclken         ),
+        .winc           ( winc           ),
+        .wfull          ( wfull          ),
         .waddr          ( waddr          ),
         .wdata          ( wdata          ),
-        .rclk           ( rclk           ),
-        .rrst_n         ( rrst_n         ),
+        // .rclk           ( rclk           ),
         .raddr          ( raddr          ),
         .rdata          ( rdata          )
     );
+
 
 
 endmodule //asyn_fifo

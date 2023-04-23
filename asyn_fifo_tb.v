@@ -21,20 +21,65 @@
 
 `timescale 1ns / 10ps
 
-module asyn_fifo #(
-    ADDR_WIDTH = 4, // 16 depth
-    DATA_WIDTH = 32
-)(
-    input  wire wclk,
-    input  wire wrst_n,
-    input  wire winc,
-    output wire full,
-    input  wire [DATA_WIDTH-1:0] wdata,
+module asyn_fifo_tb ();
 
-    input  wire rclk,
-    input  wire rrst_n,
-    output wire empty,
-    output wire [DATA_WIDTH-1:0] rdata
-);
+    parameter DATA_WIDTH = 32;
+
+    reg  wclk, wrst_n;
+    reg  winc;
+    wire full;
+    reg  [DATA_WIDTH-1:0] wdata;
+
+    reg  rclk, rrst_n;
+    reg  rinc;
+    wire empty;
+    wire [DATA_WIDTH-1:0] rdata;
+
+    asyn_fifo u_asyn_fifo(
+        .wclk           ( wclk           ),
+        .wrst_n         ( wrst_n         ),
+        .winc           ( winc           ),
+        .wfull          ( full           ),
+        .wdata          ( wdata          ),
+
+        .rclk           ( rclk           ),
+        .rrst_n         ( rrst_n         ),
+        .rinc           ( rinc           ),
+        .rempty         ( empty          ),
+        .rdata          ( rdata          )
+    );
+
+    always @(posedge wclk or negedge wrst_n) begin
+        if(wrst_n) wdata <= 0;
+        else wdata <= wdata + (winc && ~full);
+    end
+
+    initial begin
+        wclk = 1'b0;
+        wrst_n = 1'b1;
+        winc = 1'b0;
+        rclk = 1'b0;
+        rrst_n = 1'b1;
+        rinc = 1'b0;
+        #10;    // rst enable
+        wrst_n = 1'b0;
+        rrst_n = 1'b0;
+        #20;    // rst disable
+        wrst_n = 1'b1;
+        rrst_n = 1'b1;
+        #20;
+        winc = 1'b1;
+        rinc = 1'b1;
+
+        while (~full) #20;  // Test write full condition
+        #100 winc = 1'b0;
+        while (~empty) #20;  // Test read empty condition
+        #100 rinc = 1'b0;
+        $finish;
+    end
+
+    always #5 wclk <= ~wclk;    // 100MHz
+
+    always #10 rclk <= ~rclk;   // 50MHz
 
 endmodule //asyn_fifo
