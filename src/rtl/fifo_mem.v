@@ -54,7 +54,7 @@ module fifo_mem #(
             .doutb ( rdata  )     // output wire [32 : 0] doutb
         );
     `else
-        reg  [ADDR_WIDTH-1:0] fifo_mem [DATA_WIDTH-1:0];
+        reg  [DATA_WIDTH-1:0] fifo_mem [2**ADDR_WIDTH-1:0];
 
         always @(posedge wclk ) begin
             if(wclken) fifo_mem[waddr] <= wdata;
