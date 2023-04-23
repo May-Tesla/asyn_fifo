@@ -20,23 +20,48 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 10ps
+`define XILINX
 
 module asyn_fifo #(
     ADDR_WIDTH = 4, // 16 depth
     DATA_WIDTH = 32
 )(
-    input  wire wclk,
-    input  wire wrst_n,
+    `ifdef XILINX
+        input  wire clk_in1_p,
+        input  wire clk_in1_n,
+        input  wire clk_in2_p,
+        input  wire clk_in2_n,
+        input  wire sys_rst  ,
+    `else
+        input  wire wclk,
+        input  wire wrst_n,
+        input  wire rclk,
+        input  wire rrst_n,
+        input  wire [DATA_WIDTH-1:0] wdata,
+        output wire [DATA_WIDTH-1:0] rdata,
+    `endif
     input  wire winc,
     output wire wfull,
-    input  wire [DATA_WIDTH-1:0] wdata,
 
-    input  wire rclk,
-    input  wire rrst_n,
     input  wire rinc,
-    output wire rempty,
-    output wire [DATA_WIDTH-1:0] rdata
+    output wire rempty
 );
+
+    wire [ADDR_WIDTH-1:0] waddr;
+    wire [ADDR_WIDTH-1:0] raddr;
+    wire [DATA_WIDTH:0] wq2_rptr, rptr;
+    wire [DATA_WIDTH:0] rq2_wptr, wptr;
+
+    `ifdef XILINX
+        wire wclk, wrst_n;
+        wire rclk, rrst_n;
+        reg  [DATA_WIDTH-1:0] wdata;
+        wire [DATA_WIDTH-1:0] rdata;
+        always @(posedge wclk or negedge wrst_n) begin
+            if(!wrst_n) wdata <= 0;
+            else wdata <= wdata + (winc && ~wfull);
+        end
+    `endif
 
     wr_ctrl#(
         .ADDR_WIDTH( ADDR_WIDTH ),
@@ -98,6 +123,44 @@ module asyn_fifo #(
         .rdata          ( rdata          )
     );
 
+    `ifdef XILINX
+        clk_wiz_0 u0_clk_wiz (
+            // Clock out ports
+            .clk_out1  ( wclk    ),  // output clk_out1, 100M
+            // Status and control signals
+            .reset     ( sys_rst ),  // input reset
+            .locked    ( wrst_n  ),  // output locked
+            // Clock in ports
+            .clk_in1_p ( clk_in1_p ),  // input clk_in1_p
+            .clk_in1_n ( clk_in1_n )   // input clk_in1_n
+        );
 
-
+        clk_wiz_1 u1_clk_wiz (
+            // Clock out ports
+            .clk_out1  ( rclk    ),  // output clk_out1, 50M
+            // Status and control signals
+            .reset     ( sys_rst ),  // input reset
+            .locked    ( rrst_n  ),  // output locked
+            // Clock in ports
+            .clk_in1_p ( clk_in2_p ),  // input clk_in1_p
+            .clk_in1_n ( clk_in2_n )   // input clk_in1_n
+        );
+        ila_0 w_monitor (
+            .clk    ( wclk  ), // input wire clk
+            .probe0 ( winc  ), // input wire probe0
+            .probe1 ( wfull ), // input wire probe1
+            .probe2 ( waddr ), // input wire [ 3:0]  probe2
+            .probe3 ( wdata )  // input wire [31:0]  probe3
+        );
+        ila_0 r_monitor (
+            .clk    ( rclk   ), // input wire clk
+            .probe0 ( rinc   ), // input wire probe0
+            .probe1 ( rempty ), // input wire probe1
+            .probe2 ( raddr  ), // input wire [ 3:0]  probe2
+            .probe3 ( rdata  )  // input wire [31:0]  probe3
+        );
+    `else
+        assign wclk = clk_in1_p;
+        assign rclk = clk_in2_p;
+    `endif
 endmodule //asyn_fifo

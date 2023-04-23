@@ -21,21 +21,21 @@
 
 `timescale 1ns / 10ps
 
-module sync_w2r #(
+module sync_r2w #(
     ADDR_WIDTH = 4, // 16 depth
     DATA_WIDTH = 32
 )(
-    input  wire rclk,
-    input  wire rrst_n,
-    input  wire [ADDR_WIDTH:0] wptr,
-    output reg  [ADDR_WIDTH:0] rq2_wptr
+    input  wire wclk,
+    input  wire wrst_n,
+    input  wire [ADDR_WIDTH:0] rptr,    // Gray code
+    output reg  [ADDR_WIDTH:0] wq2_rptr
 );
 
-    reg  [ADDR_WIDTH:0] rq1_wptr;
+    reg  [ADDR_WIDTH:0] wq1_rptr;
 
-    always @(posedge rclk or negedge rrst_n) begin
-        if(rrst_n) {rq2_wptr, rq1_wptr} <= {(2*ADDR_WIDTH){1'b0}};
-        else {rq2_wptr, rq1_wptr} <= {rq1_wptr, wptr};
+    always @(posedge wclk or negedge wrst_n) begin
+        if(!wrst_n) {wq2_rptr, wq1_rptr} <= {(2*ADDR_WIDTH){1'b0}};
+        else {wq2_rptr, wq1_rptr} <= {wq1_rptr, rptr};
     end
 
-endmodule //sync_w2r
+endmodule //sync_r2w
