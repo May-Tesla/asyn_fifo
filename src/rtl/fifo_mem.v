@@ -20,6 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 10ps
+`ifdef XILINX
+    `undef XILINX
+`endif
 
 module fifo_mem #(
     ADDR_WIDTH = 4, // 16 depth

@@ -49,8 +49,8 @@ module asyn_fifo #(
 
     wire [ADDR_WIDTH-1:0] waddr;
     wire [ADDR_WIDTH-1:0] raddr;
-    wire [DATA_WIDTH:0] wq2_rptr, rptr;
-    wire [DATA_WIDTH:0] rq2_wptr, wptr;
+    wire [ADDR_WIDTH:0] wq2_rptr, rptr;
+    wire [ADDR_WIDTH:0] rq2_wptr, wptr;
 
     `ifdef XILINX
         wire wclk, wrst_n;

@@ -9,8 +9,8 @@
 ##
 #######################################
 
-create_clock -period 10.000 -name wclk -waveform {0.000 5.000} -add [get_ports wclk]
-create_clock -period 20.000 -name rclk -waveform {0.000 10.000} -add [get_ports rclk]
+create_clock -period 10.000 -name wclk -waveform {0.000 5.000} -add [get_ports clk_in1_p]
+create_clock -period 20.000 -name rclk -waveform {0.000 10.000} -add [get_ports clk_in2_p]
 
 set_clock_groups -name async_wclk_rclk -asynchronous -group \
 [get_clocks -include_generated_clocks wclk] -group [get_clocks -include_generated_clocks rclk]
