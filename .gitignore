@@ -39,6 +39,7 @@
 *.sim
 *.gen
 *.runs
+*.srcs
 
 ### IP synth
 *_synth_*

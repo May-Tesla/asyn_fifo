@@ -49,10 +49,8 @@ module rd_ctrl #(
     end
 
     assign raddr = rbin[ADDR_WIDTH-1:0];    // The lower n bits of n+1 bit binary code can be directly addressed
-
     // Generation of full queue information, comparison logic: MSB and 2nd MSB are opposite, and the remaining bits are equal
-    assign rempty_temp = (rgray_next == {~rq2_wptr[ADDR_WIDTH:ADDR_WIDTH-1],
-                                          rq2_wptr[ADDR_WIDTH-2:0]});
+    assign rempty_temp = (rgray_next == rq2_wptr);
 
     always @(posedge rclk or negedge rrst_n)
        if (!rrst_n) rempty <= 1'b0;
