@@ -13,8 +13,8 @@
 // 
 // Dependencies: 
 // 
-// Revision:
-// Revision 0.01 - File Created
+// Revision: 1.0 - work correctly
+// 
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ module asyn_fifo #(
     wr_ctrl#(
         .ADDR_WIDTH( ADDR_WIDTH ),
         .DATA_WIDTH( DATA_WIDTH )
-    )u_wr_ctrl(
+    ) u_wr_ctrl (
         .wclk           ( wclk           ),
         .wrst_n         ( wrst_n         ),
         .winc           ( winc           ),
@@ -79,7 +79,7 @@ module asyn_fifo #(
     sync_r2w#(
         .ADDR_WIDTH( ADDR_WIDTH ),
         .DATA_WIDTH( DATA_WIDTH )
-    )u_sync_r2w(
+    ) u_sync_r2w (
         .wclk           ( wclk           ),
         .wrst_n         ( wrst_n         ),
         .rptr           ( rptr           ),
@@ -89,7 +89,7 @@ module asyn_fifo #(
     rd_ctrl#(
         .ADDR_WIDTH( ADDR_WIDTH ),
         .DATA_WIDTH( DATA_WIDTH )
-    )u_rd_ctrl(
+    ) u_rd_ctrl (
         .rclk           ( rclk           ),
         .rrst_n         ( rrst_n         ),
         .rinc           ( rinc           ),
@@ -102,7 +102,7 @@ module asyn_fifo #(
     sync_w2r#(
         .ADDR_WIDTH( ADDR_WIDTH ),
         .DATA_WIDTH( DATA_WIDTH )
-    )u_sync_w2r(
+    ) u_sync_w2r (
         .rclk           ( rclk           ),
         .rrst_n         ( rrst_n         ),
         .wptr           ( wptr           ),
@@ -112,7 +112,7 @@ module asyn_fifo #(
     fifo_mem#(
         .ADDR_WIDTH( ADDR_WIDTH ),
         .DATA_WIDTH( DATA_WIDTH )
-    )u_fifo_mem(
+    ) u_fifo_mem (
         .wclk           ( wclk           ),
         .winc           ( winc           ),
         .wfull          ( wfull          ),
@@ -145,6 +145,7 @@ module asyn_fifo #(
             .clk_in1_p ( clk_in2_p ),  // input clk_in1_p
             .clk_in1_n ( clk_in2_n )   // input clk_in1_n
         );
+
         ila_0 w_monitor (
             .clk    ( wclk  ), // input wire clk
             .probe0 ( winc  ), // input wire probe0
@@ -152,6 +153,7 @@ module asyn_fifo #(
             .probe2 ( waddr ), // input wire [ 3:0]  probe2
             .probe3 ( wdata )  // input wire [31:0]  probe3
         );
+        
         ila_0 r_monitor (
             .clk    ( rclk   ), // input wire clk
             .probe0 ( rinc   ), // input wire probe0
